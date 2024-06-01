@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import slides from "../slides";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
+import NextButton from "./NextButton";
 
 interface Slide {
   id: string;
@@ -19,7 +20,7 @@ interface ViewableItemsChangedProps {
 const Onboarding: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef(null);
+  const slidesRef = useRef<FlatList<Slide> | null>(null);
 
   const viewableItemsChanged = useRef(
     ({ viewableItems }: ViewableItemsChangedProps) => {
@@ -29,6 +30,14 @@ const Onboarding: React.FC = () => {
   ).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+  const scrollTo = () => {
+    if (currentIndex < slides.length - 1) {
+      slidesRef.current?.scrollToIndex({ index: currentIndex + 1 });
+    } else {
+      console.log("Last item");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -53,6 +62,10 @@ const Onboarding: React.FC = () => {
       </View>
 
       <Paginator data={slides} scrollX={scrollX} />
+      <NextButton
+        scrollTo={scrollTo}
+        percentage={(currentIndex + 1) * (100 / slides.length)}
+      />
     </View>
   );
 };
