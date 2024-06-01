@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 
 import slides from "../slides";
 import OnboardingItem from "./OnboardingItem";
+import Paginator from "./Paginator";
 
 interface Slide {
   id: string;
@@ -22,7 +23,8 @@ const Onboarding: React.FC = () => {
 
   const viewableItemsChanged = useRef(
     ({ viewableItems }: ViewableItemsChangedProps) => {
-      setCurrentIndex(viewableItems[0].index!);
+      const firstViewableItem = viewableItems[0];
+      setCurrentIndex(firstViewableItem?.index ?? 0);
     }
   ).current;
 
@@ -35,7 +37,7 @@ const Onboarding: React.FC = () => {
           data={slides}
           renderItem={({ item }) => <OnboardingItem item={item} />}
           horizontal
-          showsHorizontalScrollIndicator
+          showsHorizontalScrollIndicator={false}
           pagingEnabled
           bounces={false}
           keyExtractor={(item) => item.id}
@@ -49,6 +51,8 @@ const Onboarding: React.FC = () => {
           ref={slidesRef}
         />
       </View>
+
+      <Paginator data={slides} scrollX={scrollX} />
     </View>
   );
 };
